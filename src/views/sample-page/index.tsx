@@ -1,8 +1,9 @@
 import MainCard from 'ui-component/cards/MainCard';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import Xarrow, { useXarrow, Xwrapper } from 'react-xarrows';
 // ==============================|| SAMPLE PAGE ||============================== //
 
 interface Position {
@@ -19,37 +20,43 @@ interface PosState {
 }
 
 const SamplePage = () => {
+    const updateXarrow = useXarrow();
+
     const [posi, setPosi] = useState<PosState>({
-        item1: { x: 0, y: -180 },
-        item2: { x: 180, y: 0 },
+        item1: { x: 0, y: -120 },
+        item2: { x: 120, y: 0 },
         item3: { x: 0, y: 0 },
-        item4: { x: 0, y: 180 },
-        item5: { x: -180, y: 0 }
+        item4: { x: 0, y: 120 },
+        item5: { x: -120, y: 0 }
     });
+
+    useEffect(() => {
+        updateXarrow;
+    }, [posi, updateXarrow]);
 
     const handleDragStop = (itemKey: keyof PosState, e: DraggableEvent, data: DraggableData) => {
         const newPos = { x: data.x, y: data.y };
 
-        for (let key in posi) {
-            if (key !== itemKey) {
-                const item = posi[key as keyof PosState];
-                const distX = Math.abs(item.x - newPos.x);
-                const distY = Math.abs(item.y - newPos.y);
+        setPosi((prevState) => {
+            const newState = { ...prevState };
+            for (let key in prevState) {
+                if (key !== itemKey) {
+                    const item = prevState[key as keyof PosState];
+                    const distX = Math.abs(item.x - newPos.x);
+                    const distY = Math.abs(item.y - newPos.y);
 
-                if (distX < 65 && distY < 65) {
-                    setPosi((prevState) => ({
-                        ...prevState,
-                        [itemKey]: { ...item },
-                        [key]: { ...posi[itemKey] }
-                    }));
-                    return;
+                    if (distX <= 65 && distY <= 65) {
+                        newState[key as keyof PosState] = { ...prevState[itemKey as keyof PosState] };
+                        newState[itemKey as keyof PosState] = { ...item };
+                        return newState;
+                    }
                 }
             }
-        }
-        setPosi((prevState) => ({
-            ...prevState,
-            [itemKey]: newPos
-        }));
+            newState[itemKey as keyof PosState] = newPos;
+            return newState;
+        });
+
+        setTimeout(updateXarrow, 0);
     };
 
     return (
@@ -58,9 +65,16 @@ const SamplePage = () => {
                 maxWidth={false}
                 sx={{ height: '60vh', bgcolor: 'lightcyan', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             >
-                <Draggable position={posi.item1} onStop={(e, data) => handleDragStop('item1', e, data)}>
+                <Draggable
+                    onDrag={updateXarrow}
+                    position={posi.item1}
+                    onStop={(e, data) => {
+                        handleDragStop('item1', e, data);
+                    }}
+                >
                     <Grid
                         container
+                        id="item1"
                         sx={{
                             width: '50px',
                             height: '50px',
@@ -77,9 +91,16 @@ const SamplePage = () => {
                         </Grid>
                     </Grid>
                 </Draggable>
-                <Draggable position={posi.item2} onStop={(e, data) => handleDragStop('item2', e, data)}>
+                <Draggable
+                    onDrag={updateXarrow}
+                    position={posi.item2}
+                    onStop={(e, data) => {
+                        handleDragStop('item2', e, data);
+                    }}
+                >
                     <Grid
                         container
+                        id="item2"
                         sx={{
                             width: '50px',
                             height: '50px',
@@ -96,9 +117,16 @@ const SamplePage = () => {
                         </Grid>
                     </Grid>
                 </Draggable>
-                <Draggable position={posi.item3} onStop={(e, data) => handleDragStop('item3', e, data)}>
+                <Draggable
+                    onDrag={updateXarrow}
+                    position={posi.item3}
+                    onStop={(e, data) => {
+                        handleDragStop('item3', e, data);
+                    }}
+                >
                     <Grid
                         container
+                        id="item3"
                         sx={{
                             width: '50px',
                             height: '50px',
@@ -115,9 +143,16 @@ const SamplePage = () => {
                         </Grid>
                     </Grid>
                 </Draggable>
-                <Draggable position={posi.item4} onStop={(e, data) => handleDragStop('item4', e, data)}>
+                <Draggable
+                    onDrag={updateXarrow}
+                    position={posi.item4}
+                    onStop={(e, data) => {
+                        handleDragStop('item4', e, data);
+                    }}
+                >
                     <Grid
                         container
+                        id="item4"
                         sx={{
                             width: '50px',
                             height: '50px',
@@ -134,9 +169,16 @@ const SamplePage = () => {
                         </Grid>
                     </Grid>
                 </Draggable>
-                <Draggable position={posi.item5} onStop={(e, data) => handleDragStop('item5', e, data)}>
+                <Draggable
+                    onDrag={updateXarrow}
+                    position={posi.item5}
+                    onStop={(e, data) => {
+                        handleDragStop('item5', e, data);
+                    }}
+                >
                     <Grid
                         container
+                        id="item5"
                         sx={{
                             width: '50px',
                             height: '50px',
@@ -153,6 +195,10 @@ const SamplePage = () => {
                         </Grid>
                     </Grid>
                 </Draggable>
+                <Xarrow showHead={false} start="item3" end="item1" />
+                <Xarrow showHead={false} start="item3" end="item2" />
+                <Xarrow showHead={false} start="item3" end="item4" />
+                <Xarrow showHead={false} start="item3" end="item5" />
             </Container>
         </MainCard>
     );
