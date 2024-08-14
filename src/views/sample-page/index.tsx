@@ -3,7 +3,7 @@ import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { useState, useEffect } from 'react';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import Xarrow, { useXarrow, Xwrapper } from 'react-xarrows';
+import Xarrow, { useXarrow } from 'react-xarrows';
 // ==============================|| SAMPLE PAGE ||============================== //
 
 interface Position {
